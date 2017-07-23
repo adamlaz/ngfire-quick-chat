@@ -38,6 +38,9 @@ import {
   MdToolbarModule,
   MdTooltipModule
 } from '@angular/material';
+import { MainComponent } from './+main/main.component';
+import { MypostsComponent } from './+myposts/myposts.component';
+import { SigninComponent } from './+signin/signin.component';
 
 
 export const MaterialModules = [
@@ -68,7 +71,10 @@ export const MaterialModules = [
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MainComponent,
+    MypostsComponent,
+    SigninComponent
   ],
   imports: [
     BrowserModule,
