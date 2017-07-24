@@ -52,7 +52,6 @@ export class PostComponent implements OnInit {
   }
 
   save(): void {
-      console.log('TODO save the change', this.updatedPostBody);
       const updatedPost = new Post();
       updatedPost.body = this.updatedPostBody;
       updatedPost.authorKey = this.authService.currentUserUid;
