@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Post, PostWithAuthor } from '../models/post';
-import { AuthService } from "../services/auth.service";
-import { PostService } from "../services/post.service";
-import { MdSnackBar } from "@angular/material";
+import { AuthService } from '../services/auth.service';
+import { PostService } from '../services/post.service';
+import { MdSnackBar } from '@angular/material';
 
 enum EditMode {
   notEditable = 0,
@@ -19,6 +19,7 @@ export class PostComponent implements OnInit {
   @Input() postWithAuthor: PostWithAuthor;
 
   public editingMode = EditMode.notEditable;
+  public updatedPostBody: string;
 
   constructor(private authService: AuthService, private postService: PostService, private snackBar: MdSnackBar) { }
 
@@ -30,6 +31,8 @@ export class PostComponent implements OnInit {
 
   enableEditing() {
     console.log('enabling editing');
+    this.editingMode = EditMode.editing;
+    this.updatedPostBody = this.postWithAuthor.body;
   }
 
   remove() {
@@ -47,5 +50,17 @@ export class PostComponent implements OnInit {
       });
     });
   }
+
+  save(): void {
+      console.log('TODO save the change', this.updatedPostBody);
+      const updatedPost = new Post();
+      updatedPost.body = this.updatedPostBody;
+      updatedPost.authorKey = this.authService.currentUserUid;
+      this.postService.update(this.postWithAuthor.$key, updatedPost);
+      this.editingMode = EditMode.displayEditButtons;
+    }
+  cancel(): void {
+      this.editingMode = EditMode.displayEditButtons;
+    }
 
 }
