@@ -14,11 +14,12 @@
         </md-nav-list>
     </md-sidenav>
     <md-toolbar color="primary">
-        <button md-icon-button (click)="sidenav.toggle()">
+        <button *ngIf="authService.isSignedInStream | async" md-icon-button (click)="sidenav.toggle()">
           <md-icon>menu</md-icon>
         </button>
 
         <span>Adam's Quick Chat</span>
+        <span fxFlex></span> {{authService.displayNameStream | async}}
     </md-toolbar>
     <router-outlet></router-outlet>
 </md-sidenav-container>

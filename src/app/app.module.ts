@@ -11,6 +11,7 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { environment } from '../environments/environment';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import 'hammerjs';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import {
