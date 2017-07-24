@@ -5,19 +5,38 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import { AuthorService } from './author.service';
 import { Author } from '../models/author';
+import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import 'rxjs/add/operator/scan';
+import 'rxjs/add/operator/switchMap';
+import * as firebase from 'firebase/app';
 
 @Injectable()
 export class PostService {
   readonly postsPath = 'posts';
-  private _postsStream: FirebaseListObservable<Post[]>;
+  readonly postBatchSize = 4;
 
   postsWithAuthorStream: Observable<PostWithAuthor[]>;
+  private postIncrementStream: Subject<number>;
 
   constructor(private db: AngularFireDatabase,
-  private authorService: AuthorService) {
-    this._postsStream = this.db.list(this.postsPath);
+    private authorService: AuthorService) {
+    this.postIncrementStream = new BehaviorSubject<number>(this.postBatchSize);
+    const numPostsStream: Observable<number> = this.postIncrementStream
+      .scan<number>((previousTotal: number, currentValue: number) => {
+        return previousTotal + currentValue;
+      });
+    const postsStream: Observable<Post[]> = numPostsStream
+      .switchMap<number, Post[]>((numPosts: number) => {
+        return this.db.list(this.postsPath, {
+          query: {
+            limitToLast: numPosts,
+          }
+        });
+      });
+
     this.postsWithAuthorStream = Observable.combineLatest<PostWithAuthor[]>(
-      this._postsStream,
+      postsStream,
       this.authorService.authorMapStream,
       (posts: Post[], authorMap: Map<string, Author>) => {
         const postsWithAuthor: PostWithAuthor[] = [];
@@ -30,11 +49,12 @@ export class PostService {
       });
   }
 
-  // get postsStream(): FirebaseListObservable<Post[]>{
-  //   return this._postsStream;
-  // }
-
   add(post: Post) {
-    this._postsStream.push(post);
+    firebase.database().ref().child(this.postsPath).push(post);
   }
+
+  displayMorePosts() {
+    this.postIncrementStream.next(this.postBatchSize);
+  }
+
 }
