@@ -53,12 +53,18 @@ export class PostService {
       });
   }
 
-  add(post: Post) {
+  add(post: Post): void {
     firebase.database().ref().child(this.postsPath).push(post);
   }
 
-  displayMorePosts() {
+  displayMorePosts(): void {
     this.postIncrementStream.next(this.postBatchSize);
+  }
+
+  remove(keyToRemove: string): void {
+    firebase.database().ref(`/${this.postsPath}/${keyToRemove}`).remove();
+    // below is with angular fire
+    // this.db.object(`/${this.postsPath}/${keyToRemove}`).remove();
   }
 
 }

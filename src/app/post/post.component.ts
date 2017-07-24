@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Post, PostWithAuthor } from '../models/post';
 import { AuthService } from "../services/auth.service";
+import { PostService } from "../services/post.service";
 
 enum EditMode {
   notEditable = 0,
@@ -18,7 +19,7 @@ export class PostComponent implements OnInit {
 
   public editingMode = EditMode.notEditable;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private postService: PostService) { }
 
   ngOnInit() {
     if (this.postWithAuthor.authorKey === this.authService.currentUserUid) {
@@ -31,7 +32,7 @@ export class PostComponent implements OnInit {
   }
 
   remove() {
-    console.log('delete time?');
+    this.postService.remove(this.postWithAuthor.$key);
   }
 
 }
