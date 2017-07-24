@@ -6,7 +6,7 @@ export class Author extends FirebaseFlatSnapshot {
 
   constructor(obj?: any) {
     super(obj);
-    this.displayName = obj && obj.DisplayName || '';
+    this.displayName = obj && obj.displayName || '';
     this.photoURL = obj && obj.photoURL || '';
   }
 }
