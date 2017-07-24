@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Post, PostWithAuthor } from '../models/post';
 import { AuthService } from "../services/auth.service";
 import { PostService } from "../services/post.service";
+import { MdSnackBar } from "@angular/material";
 
 enum EditMode {
   notEditable = 0,
@@ -19,7 +20,7 @@ export class PostComponent implements OnInit {
 
   public editingMode = EditMode.notEditable;
 
-  constructor(private authService: AuthService, private postService: PostService) { }
+  constructor(private authService: AuthService, private postService: PostService, private snackBar: MdSnackBar) { }
 
   ngOnInit() {
     if (this.postWithAuthor.authorKey === this.authService.currentUserUid) {
@@ -33,6 +34,18 @@ export class PostComponent implements OnInit {
 
   remove() {
     this.postService.remove(this.postWithAuthor.$key);
+    const snackBarRef = this.snackBar.open('Post removed', 'UNDO', {
+      duration: 5000,
+    });
+    snackBarRef.onAction().subscribe(() => {
+      const restoredPost = new Post();
+      restoredPost.body = this.postWithAuthor.body;
+      restoredPost.authorKey = this.authService.currentUserUid;
+      this.postService.update(this.postWithAuthor.$key, restoredPost);
+      this.snackBar.open('Post restored!', '', {
+        duration: 3000,
+      });
+    });
   }
 
 }
