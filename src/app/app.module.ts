@@ -42,11 +42,12 @@ import {
 import { MainComponent } from './+main/main.component';
 import { MypostsComponent } from './+myposts/myposts.component';
 import { SigninComponent } from './+signin/signin.component';
-import { AuthService } from "./services/auth.service";
-import { AuthGuard } from "./services/auth.guard";
+import { AuthService } from './services/auth.service';
+import { AuthGuard } from './services/auth.guard';
 import { CreatePostComponent } from './create-post/create-post.component';
 import { PostListComponent } from './post-list/post-list.component';
 import { PostComponent } from './post/post.component';
+import { PostService } from './services/post.service';
 
 
 export const MaterialModules = [
@@ -99,6 +100,7 @@ export const MaterialModules = [
   providers: [
     AuthService,
     AuthGuard,
+    PostService,
   ],
   bootstrap: [AppComponent]
 })
